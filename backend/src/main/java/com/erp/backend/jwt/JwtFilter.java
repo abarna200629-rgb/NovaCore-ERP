@@ -46,7 +46,7 @@ request.getServletPath();
 
 
 
-if(path.startsWith("/api/auth") || path.equals("/api/health") || path.equals("/health")){
+if(path.startsWith("/api/auth") || path.startsWith("/actuator") || path.equals("/api/health") || path.equals("/health")){
 
 filterChain.doFilter(
 request,

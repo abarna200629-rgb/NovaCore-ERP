@@ -56,10 +56,11 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
 
 
-            // LOGIN
+            // LOGIN & HEALTH & MONITORING
             .requestMatchers(
                     "/api/auth/**",
-                    "/api/health"
+                    "/api/health",
+                    "/actuator/**"
             )
             .permitAll()
 
