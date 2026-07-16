@@ -114,9 +114,10 @@ public class MailService {
             String activeProvider = mailProvider;
             if (System.getenv("RENDER") != null || System.getenv("PORT") != null) {
                 activeProvider = "BREVO";
-            }
-            if (System.getenv("MAIL_PROVIDER") != null && !System.getenv("MAIL_PROVIDER").trim().isEmpty()) {
-                activeProvider = System.getenv("MAIL_PROVIDER").trim();
+            } else {
+                if (System.getenv("MAIL_PROVIDER") != null && !System.getenv("MAIL_PROVIDER").trim().isEmpty()) {
+                    activeProvider = System.getenv("MAIL_PROVIDER").trim();
+                }
             }
 
             String activeApiKey = (brevoApiKey != null && !brevoApiKey.trim().isEmpty()) ? brevoApiKey : System.getenv("BREVO_API_KEY");
