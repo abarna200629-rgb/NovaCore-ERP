@@ -27,6 +27,15 @@ public class MailService {
     @Value("${spring.mail.username:}")
     private String mailUsername;
 
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable:true}")
+    private String mailStartTls;
+
+    @Value("${spring.mail.properties.mail.smtp.ssl.enable:false}")
+    private String mailSsl;
+
+    @Value("${spring.mail.properties.mail.smtp.connectiontimeout:5000}")
+    private String mailConnectionTimeout;
+
     @Value("${mail.provider:BREVO}")
     private String mailProvider;
 
@@ -38,6 +47,7 @@ public class MailService {
 
     // OTP MAIL
     public void sendOtpMail(String toEmail, String otp) {
+        System.out.println("OTP generated for recipient: " + toEmail + " is: " + otp);
         sendEmailAsync(toEmail, "ERP Login OTP", "Your ERP Login OTP is: " + otp + "\n\nValid for 10 minutes.");
     }
 
@@ -46,16 +56,20 @@ public class MailService {
         sendEmailAsync(toEmail, subject, text);
     }
 
-    // ASYNC EMAIL HELPER WITH AUTOMATIC SMTP -> BREVO FALLBACK
+    // ASYNC EMAIL HELPER WITH DETAILED LOGGING AND FALLBACK
     private void sendEmailAsync(String toEmail, String subject, String text) {
         new Thread(() -> {
             System.out.println("=== EMAIL TRANSMISSION INITIATED ===");
-            System.out.println("Mail Provider: " + mailProvider);
-            System.out.println("SMTP Host: " + mailHost);
-            System.out.println("SMTP Port: " + mailPort);
-            System.out.println("SMTP Username: " + mailUsername);
-            System.out.println("Sender Address (From): " + mailFrom);
             System.out.println("Recipient (To): " + toEmail);
+            System.out.println("Subject: " + subject);
+            System.out.println("Active Mail Provider: " + mailProvider);
+            System.out.println("SMTP Configuration Host: " + mailHost);
+            System.out.println("SMTP Configuration Port: " + mailPort);
+            System.out.println("SMTP Configuration Username: " + mailUsername);
+            System.out.println("SMTP StartTLS Enabled: " + mailStartTls);
+            System.out.println("SMTP SSL Enabled: " + mailSsl);
+            System.out.println("SMTP Connection Timeout: " + mailConnectionTimeout + "ms");
+            System.out.println("Sender Address (From): " + mailFrom);
             System.out.println("====================================");
 
             boolean sent = false;
@@ -63,7 +77,7 @@ public class MailService {
             // 1. Attempt SMTP if configured and selected
             if ("SMTP".equalsIgnoreCase(mailProvider)) {
                 try {
-                    System.out.println("Attempting email delivery via SMTP...");
+                    System.out.println("Attempting email dispatch via SMTP...");
                     SimpleMailMessage message = new SimpleMailMessage();
                     message.setFrom(mailFrom);
                     message.setTo(toEmail);
@@ -73,7 +87,7 @@ public class MailService {
                     System.out.println("Email sent successfully via SMTP to: " + toEmail);
                     sent = true;
                 } catch (Exception e) {
-                    System.err.println("SMTP Mail sending failed to: " + toEmail + ". Error: " + e.getMessage());
+                    System.err.println("SMTP Mail sending failed to: " + toEmail + ". Complete Error Stack Trace:");
                     e.printStackTrace();
                     if (brevoApiKey != null && !brevoApiKey.trim().isEmpty()) {
                         System.out.println("SMTP failed. Initiating automatic fallback to Brevo API...");
@@ -86,7 +100,7 @@ public class MailService {
             // 2. Attempt Brevo if selected OR as automatic fallback
             if (!sent && ("BREVO".equalsIgnoreCase(mailProvider) || (brevoApiKey != null && !brevoApiKey.trim().isEmpty()))) {
                 try {
-                    System.out.println("Attempting email delivery via Brevo API...");
+                    System.out.println("Attempting email dispatch via Brevo API...");
                     HttpClient client = HttpClient.newBuilder()
                             .connectTimeout(Duration.ofSeconds(5))
                             .build();
