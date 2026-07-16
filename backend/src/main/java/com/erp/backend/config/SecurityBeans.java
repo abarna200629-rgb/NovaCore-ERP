@@ -21,7 +21,7 @@ public class SecurityBeans {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
+        configuration.setAllowedOriginPatterns(
                 List.of(allowedOrigins.split(",")));
 
         configuration.setAllowedMethods(

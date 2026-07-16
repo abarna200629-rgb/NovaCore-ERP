@@ -32,7 +32,8 @@ public class MailService {
                 mailSender.send(message);
                 System.out.println("Email sent successfully to: " + toEmail + " with subject: " + subject);
             } catch (Exception e) {
-                System.err.println("SMTP Mail sending failed to: " + toEmail + ". Error: " + e.getMessage());
+                System.err.println("SMTP Mail sending failed to: " + toEmail + ". Complete Error Stack Trace:");
+                e.printStackTrace();
                 System.out.println("[CONSOLE MAIL FALLBACK]");
                 System.out.println("To: " + toEmail);
                 System.out.println("Subject: " + subject);
