@@ -1,9 +1,9 @@
 package com.erp.backend.service.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -11,12 +11,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Properties;
 
 @Service
 public class MailService {
-
-    @Autowired(required = false)
-    private JavaMailSender mailSender;
 
     @Value("${spring.mail.host:smtp.gmail.com}")
     private String mailHost;
@@ -26,6 +24,9 @@ public class MailService {
 
     @Value("${spring.mail.username:}")
     private String mailUsername;
+
+    @Value("${spring.mail.password:}")
+    private String mailPassword;
 
     @Value("${spring.mail.properties.mail.smtp.starttls.enable:true}")
     private String mailStartTls;
@@ -44,6 +45,36 @@ public class MailService {
 
     @Value("${mail.from:erpmanagement2028@gmail.com}")
     private String mailFrom;
+
+    // Build mail sender programmatically to ensure properties are loaded
+    private JavaMailSender buildJavaMailSender() {
+        JavaMailSenderImpl mailSenderImpl = new JavaMailSenderImpl();
+        mailSenderImpl.setHost(mailHost.trim());
+        try {
+            mailSenderImpl.setPort(Integer.parseInt(mailPort.trim()));
+        } catch (Exception e) {
+            mailSenderImpl.setPort(587);
+        }
+        mailSenderImpl.setUsername(mailUsername.trim());
+        mailSenderImpl.setPassword(mailPassword);
+
+        Properties props = mailSenderImpl.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", mailStartTls.trim());
+        props.put("mail.smtp.ssl.enable", mailSsl.trim());
+        props.put("mail.smtp.connectiontimeout", mailConnectionTimeout.trim());
+        props.put("mail.smtp.timeout", mailConnectionTimeout.trim());
+        props.put("mail.smtp.writetimeout", mailConnectionTimeout.trim());
+
+        if ("true".equalsIgnoreCase(mailSsl.trim())) {
+            props.put("mail.smtp.socketFactory.port", mailPort.trim());
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.socketFactory.fallback", "false");
+        }
+
+        return mailSenderImpl;
+    }
 
     // OTP MAIL
     public void sendOtpMail(String toEmail, String otp) {
@@ -78,6 +109,7 @@ public class MailService {
             if ("SMTP".equalsIgnoreCase(mailProvider)) {
                 try {
                     System.out.println("Attempting email dispatch via SMTP...");
+                    JavaMailSender mailSender = buildJavaMailSender();
                     SimpleMailMessage message = new SimpleMailMessage();
                     message.setFrom(mailFrom);
                     message.setTo(toEmail);
