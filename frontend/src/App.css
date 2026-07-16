@@ -1,0 +1,192 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#f8fafc;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* ===== SIDEBAR ===== */
+
+.sidebar{
+width:280px;
+height:100vh;
+position:fixed;
+top:0;
+left:0;
+background:#0f172a;
+color:white;
+display:flex;
+flex-direction:column;
+z-index:1000;
+}
+
+.sidebar h2,
+.sidebar h3{
+text-align:center;
+padding:20px;
+border-bottom:1px solid #1e293b;
+}
+
+.sidebar p{
+text-align:center;
+color:#94a3b8;
+margin-bottom:15px;
+}
+
+.sidebar ul{
+list-style:none;
+padding:15px;
+flex:1;
+overflow-y:auto;
+}
+
+.sidebar li{
+margin-bottom:10px;
+}
+
+.sidebar a{
+display:flex;
+align-items:center;
+gap:10px;
+text-decoration:none;
+color:white;
+padding:12px 15px;
+border-radius:12px;
+transition:.3s;
+}
+
+.sidebar a:hover
+
+.logout-btn{
+margin:15px;
+border:none;
+padding:12px;
+border-radius:10px;
+background:#ef4444;
+color:white;
+cursor:pointer;
+}
+
+/* ===== MAIN CONTENT ===== */
+
+.main-content{
+margin-left:280px;
+width:calc(100% - 280px);
+min-height:100vh;
+background:#f8fafc;
+}
+
+/* ===== NAVBAR ===== */
+
+.navbar-modern{
+height:80px;
+background:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 30px;
+box-shadow:0 4px 20px rgba(0,0,0,.08);
+position:sticky;
+top:0;
+z-index:999;
+}
+
+.left{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.right{
+display:flex;
+align-items:center;
+gap:20px;
+}
+
+/* ===== PAGE ===== */
+
+.page-content{
+padding:25px;
+}
+
+/* ===== CARDS ===== */
+
+.card{
+background:white;
+border:none;
+border-radius:20px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+/* ===== DASHBOARD ===== */
+
+.dashboard-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.dashboard-card{
+background:white;
+border-radius:20px;
+padding:25px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+transition:.3s;
+}
+
+.dashboard-card:hover{
+transform:translateY(-5px);
+}
+
+.stats-card{
+border-radius:20px;
+padding:20px;
+color:white;
+}
+
+.bg-employee{
+background:#2563eb;
+}
+
+.bg-attendance{
+background:#16a34a;
+}
+
+.bg-product{
+background:#d97706;
+}
+
+.bg-sales{
+background:#dc2626;
+}
+
+/* ===== FORMS ===== */
+
+.form-control{
+border-radius:12px;
+}
+
+.btn{
+border-radius:12px;
+}
+
+/* ===== TABLE ===== */
+
+.table{
+background:white;
+}
+
+.table th{
+background:#2563eb;
+color:white;
+}
+
+.page-title{
+font-size:28px;
+font-weight:700;
+color:#1e293b;
+}

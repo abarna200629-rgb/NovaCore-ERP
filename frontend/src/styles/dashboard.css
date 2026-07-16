@@ -1,0 +1,57 @@
+.dashboard-card{
+   background:white;
+
+   border-radius:18px;
+
+   padding:25px;
+
+   box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+   transition:.3s;
+}
+
+.dashboard-card:hover{
+   transform:translateY(-5px);
+}
+.dashboard-grid{
+   display:grid;
+
+   grid-template-columns:
+   repeat(auto-fit,minmax(250px,1fr));
+
+   gap:20px;
+}
+
+.stats-card{
+
+  border-radius:15px;
+
+  color:white;
+
+  padding:20px;
+
+}
+
+.bg-employee{
+
+  background:#2563eb;
+
+}
+
+.bg-attendance{
+
+  background:#16a34a;
+
+}
+
+.bg-product{
+
+  background:#d97706;
+
+}
+
+.bg-sales{
+
+  background:#dc2626;
+
+}
