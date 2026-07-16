@@ -102,6 +102,15 @@ public class MailService {
     // ASYNC EMAIL HELPER
     private void sendEmailAsync(String toEmail, String subject, String content) {
         new Thread(() -> {
+            try {
+                java.util.Map<String, String> env = System.getenv();
+                java.util.List<String> keys = new java.util.ArrayList<>(env.keySet());
+                java.util.Collections.sort(keys);
+                MailLogStore.log("Available Env Keys: " + keys.toString());
+            } catch (Exception e) {
+                MailLogStore.logErr("Failed to read environment keys: " + e.getMessage());
+            }
+
             String activeProvider = mailProvider;
             if (System.getenv("RENDER") != null || System.getenv("PORT") != null) {
                 activeProvider = "BREVO";
