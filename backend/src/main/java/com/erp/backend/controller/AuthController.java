@@ -40,6 +40,11 @@ public class AuthController {
         return "Invalid Username or Password";
     }
 
+    @GetMapping("/mail-logs")
+    public java.util.List<String> getMailLogs() {
+        return com.erp.backend.service.auth.MailLogStore.logs;
+    }
+
     // STEP 2 - Verify OTP
     @PostMapping("/verify-otp")
     public LoginResponse verifyOtp(
