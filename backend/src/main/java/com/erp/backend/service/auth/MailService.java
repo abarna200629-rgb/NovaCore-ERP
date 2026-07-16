@@ -27,11 +27,11 @@ public class MailService {
     @Value("${spring.mail.username:}")
     private String mailUsername;
 
-    @Value("${mail.provider:SMTP}")
+    @Value("${mail.provider:BREVO}")
     private String mailProvider;
 
-    @Value("${mail.api.key:}")
-    private String mailApiKey;
+    @Value("${brevo.api.key:}")
+    private String brevoApiKey;
 
     @Value("${mail.from:erpmanagement2028@gmail.com}")
     private String mailFrom;
@@ -50,13 +50,17 @@ public class MailService {
     private void sendEmailAsync(String toEmail, String subject, String text) {
         new Thread(() -> {
             System.out.println("=== EMAIL TRANSMISSION INITIATED ===");
-            System.out.println("Primary Provider: " + mailProvider);
+            System.out.println("Mail Provider: " + mailProvider);
+            System.out.println("SMTP Host: " + mailHost);
+            System.out.println("SMTP Port: " + mailPort);
+            System.out.println("SMTP Username: " + mailUsername);
+            System.out.println("Sender Address (From): " + mailFrom);
             System.out.println("Recipient (To): " + toEmail);
             System.out.println("====================================");
 
             boolean sent = false;
 
-            // 1. Attempt SMTP if configured
+            // 1. Attempt SMTP if configured and selected
             if ("SMTP".equalsIgnoreCase(mailProvider)) {
                 try {
                     System.out.println("Attempting email delivery via SMTP...");
@@ -71,7 +75,7 @@ public class MailService {
                 } catch (Exception e) {
                     System.err.println("SMTP Mail sending failed to: " + toEmail + ". Error: " + e.getMessage());
                     e.printStackTrace();
-                    if (mailApiKey != null && !mailApiKey.trim().isEmpty()) {
+                    if (brevoApiKey != null && !brevoApiKey.trim().isEmpty()) {
                         System.out.println("SMTP failed. Initiating automatic fallback to Brevo API...");
                     } else {
                         System.err.println("SMTP failed and no fallback BREVO API Key is configured.");
@@ -79,8 +83,8 @@ public class MailService {
                 }
             }
 
-            // 2. Attempt Brevo if selected or as automatic fallback
-            if (!sent && ("BREVO".equalsIgnoreCase(mailProvider) || (mailApiKey != null && !mailApiKey.trim().isEmpty()))) {
+            // 2. Attempt Brevo if selected OR as automatic fallback
+            if (!sent && ("BREVO".equalsIgnoreCase(mailProvider) || (brevoApiKey != null && !brevoApiKey.trim().isEmpty()))) {
                 try {
                     System.out.println("Attempting email delivery via Brevo API...");
                     HttpClient client = HttpClient.newBuilder()
@@ -95,7 +99,7 @@ public class MailService {
                     HttpRequest request = HttpRequest.newBuilder()
                             .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
                             .timeout(Duration.ofSeconds(10))
-                            .header("api-key", mailApiKey)
+                            .header("api-key", brevoApiKey)
                             .header("Content-Type", "application/json")
                             .POST(HttpRequest.BodyPublishers.ofString(body))
                             .build();
