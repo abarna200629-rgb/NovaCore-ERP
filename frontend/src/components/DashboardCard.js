@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
@@ -34,22 +35,22 @@ function Dashboard() {
 
         const emp =
           await axios.get(
-            (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employees/count"
+            API_BASE_URL + "/api/employees/count"
           );
 
         const att =
           await axios.get(
-            (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/hr/attendance/count"
+            API_BASE_URL + "/api/hr/attendance/count"
           );
 
         const prod =
           await axios.get(
-            (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/products/count"
+            API_BASE_URL + "/api/products/count"
           );
 
         const rev =
           await axios.get(
-            (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/sales/revenue"
+            API_BASE_URL + "/api/sales/revenue"
           );
 
         setEmployeeCount(

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import axios from "axios";
@@ -36,7 +37,7 @@ function Reports() {
   const [summaryLoading, setSummaryLoading] = useState({});
   const [activeTab, setActiveTab] = useState(getDefaultTab());
 
-  const API_BASE = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api";
+  const API_BASE = API_BASE_URL + "/api";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

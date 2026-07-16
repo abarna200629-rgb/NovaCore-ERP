@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -10,7 +11,7 @@ function SyncAudit() {
   const [repairing, setRepairing] = useState(false);
   const [selectedUserForEmp, setSelectedUserForEmp] = useState({});
 
-  const API_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/sync";
+  const API_URL = API_BASE_URL + "/api/sync";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

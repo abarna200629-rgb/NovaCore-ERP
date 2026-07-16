@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
@@ -12,7 +13,7 @@ function Customers() {
   const [address, setAddress] = useState("");
 
   const API_URL =
-    (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/customers";
+    API_BASE_URL + "/api/customers";
 
   const getConfig = () => {
 

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -59,7 +60,7 @@ function Attendance() {
   const recordsPerPage = 10;
 
   const role = localStorage.getItem("role") ? localStorage.getItem("role").trim().toUpperCase().replace("ROLE_", "") : "";
-  const BASE_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api";
+  const BASE_URL = API_BASE_URL + "/api";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

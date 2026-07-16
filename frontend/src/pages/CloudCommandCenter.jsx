@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
@@ -57,7 +58,7 @@ function CloudCommandCenter() {
 
   const [loading, setLoading] = useState(true);
 
-  const BASE_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/cloud";
+  const BASE_URL = API_BASE_URL + "/api/cloud";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

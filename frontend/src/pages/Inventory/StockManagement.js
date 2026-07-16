@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -18,7 +19,7 @@ function StockManagement() {
   const [transferQty, setTransferQty] = useState("");
   const [destWarehouse, setDestWarehouse] = useState("Warehouse B");
 
-  const API_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/products";
+  const API_URL = API_BASE_URL + "/api/inventory/products";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

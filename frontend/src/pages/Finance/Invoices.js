@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -57,7 +58,7 @@ function Invoices() {
     }, 800);
   };
 
-  const BASE_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/finance/records";
+  const BASE_URL = API_BASE_URL + "/api/finance/records";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

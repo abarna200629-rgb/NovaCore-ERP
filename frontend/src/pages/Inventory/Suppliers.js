@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -12,7 +13,7 @@ function Suppliers() {
   const [city, setCity] = useState("San Jose, CA");
   const [rating, setRating] = useState("A+ Grade");
 
-  const API_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/suppliers";
+  const API_URL = API_BASE_URL + "/api/inventory/suppliers";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

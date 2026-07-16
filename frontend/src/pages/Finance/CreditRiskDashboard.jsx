@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -28,7 +29,7 @@ function CreditRiskDashboard() {
   const currentUserRole = localStorage.getItem("role") || "EMPLOYEE";
   const isEmployee = currentUserRole.trim().toUpperCase() === "EMPLOYEE";
 
-  const API_BASE = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/finance/credit-risk";
+  const API_BASE = API_BASE_URL + "/api/finance/credit-risk";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

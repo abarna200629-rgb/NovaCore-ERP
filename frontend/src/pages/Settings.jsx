@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useState, useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
 import { FaBuilding, FaPalette, FaEnvelopeOpenText, FaUserCog, FaSave, FaCloud, FaServer, FaHistory, FaUndo } from "react-icons/fa";
@@ -37,11 +38,11 @@ function Settings() {
       const token = localStorage.getItem("token");
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
-      const statusRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/cloud/status", config);
+      const statusRes = await axios.get(API_BASE_URL + "/api/cloud/status", config);
       setCloudStatus(statusRes.data);
 
       if (role === "ADMIN") {
-        const backupsRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/cloud/backups", config);
+        const backupsRes = await axios.get(API_BASE_URL + "/api/cloud/backups", config);
         setBackups(backupsRes.data);
       }
     } catch (err) {
@@ -53,7 +54,7 @@ function Settings() {
     try {
       const token = localStorage.getItem("token");
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.post((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/cloud/backups/trigger", {}, config);
+      await axios.post(API_BASE_URL + "/api/cloud/backups/trigger", {}, config);
       alert("Manual cloud backup triggered successfully.");
       loadCloudData();
     } catch (err) {
@@ -67,7 +68,7 @@ function Settings() {
     try {
       const token = localStorage.getItem("token");
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/cloud/backups/restore/${backupId}`, {}, config);
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/cloud/backups/restore/${backupId}`, {}, config);
       alert(res.data.message || "System successfully restored from cloud backup.");
       loadCloudData();
     } catch (err) {

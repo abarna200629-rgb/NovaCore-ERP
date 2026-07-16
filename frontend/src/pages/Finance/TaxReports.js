@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -10,8 +11,8 @@ function TaxReports() {
   const [totalOutputGst, setTotalOutputGst] = useState(0);
   const [totalInputCredit, setTotalInputCredit] = useState(0);
 
-  const SALES_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/sales/orders";
-  const PUR_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/purchases";
+  const SALES_URL = API_BASE_URL + "/api/sales/orders";
+  const PUR_URL = API_BASE_URL + "/api/inventory/purchases";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -21,7 +22,7 @@ function Performance() {
 
   const loadPerformance = async () => {
     try {
-      const response = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/performance", getConfig());
+      const response = await axios.get(API_BASE_URL + "/api/performance", getConfig());
       setPerformanceList(response.data || []);
     } catch (error) {
       console.error(error);

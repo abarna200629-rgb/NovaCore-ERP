@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
@@ -21,8 +22,8 @@ function Production() {
   const [rmStock, setRmStock] = useState("");
   const [rmUnit, setRmUnit] = useState("kg");
 
-  const BASE_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/production";
-  const INV_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory";
+  const BASE_URL = API_BASE_URL + "/api/production";
+  const INV_URL = API_BASE_URL + "/api/inventory";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

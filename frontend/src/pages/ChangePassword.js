@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +37,7 @@ function ChangePassword() {
         newPassword
       };
 
-      const response = await axios.post((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/auth/change-password", payload);
+      const response = await axios.post(API_BASE_URL + "/api/auth/change-password", payload);
       
       if (response.data === "SUCCESS") {
         alert("Password changed successfully! Welcome to NovaCore ERP.");

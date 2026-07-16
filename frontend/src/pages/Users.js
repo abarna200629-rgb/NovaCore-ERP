@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
@@ -41,7 +42,7 @@ function Users() {
   const [editStatus, setEditStatus] = useState("ACTIVE");
   const [newResetPassword, setNewResetPassword] = useState("");
 
-  const API_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/users";
+  const API_URL = API_BASE_URL + "/api/users";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

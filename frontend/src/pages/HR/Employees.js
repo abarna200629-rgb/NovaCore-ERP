@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -28,7 +29,7 @@ function Employees() {
     password: ""
   });
 
-  const API_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employees";
+  const API_URL = API_BASE_URL + "/api/employees";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");
@@ -46,7 +47,7 @@ function Employees() {
       const response = await axios.get(`${API_URL}?status=${statusFilter}`, getConfig());
       setEmployees(response.data);
       
-      const userRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/users", getConfig());
+      const userRes = await axios.get(API_BASE_URL + "/api/users", getConfig());
       if (userRes && Array.isArray(userRes.data)) {
         setUsers(userRes.data);
       }

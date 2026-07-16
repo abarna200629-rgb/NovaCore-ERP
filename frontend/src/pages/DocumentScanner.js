@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
@@ -60,10 +61,10 @@ function DocumentScanner() {
     }
   };
 
-  const API_BASE = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/ocr";
-  const EXPENSE_API = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/finance/expenses";
-  const LEAVE_API = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/hr/leaves";
-  const EMPLOYEES_API = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employees";
+  const API_BASE = API_BASE_URL + "/api/ai/ocr";
+  const EXPENSE_API = API_BASE_URL + "/api/finance/expenses";
+  const LEAVE_API = API_BASE_URL + "/api/hr/leaves";
+  const EMPLOYEES_API = API_BASE_URL + "/api/employees";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

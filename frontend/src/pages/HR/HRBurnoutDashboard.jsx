@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -27,7 +28,7 @@ function HRBurnoutDashboard() {
   const currentUserRole = localStorage.getItem("role") || "EMPLOYEE";
   const isEmployeeOnly = currentUserRole.trim().toUpperCase() === "EMPLOYEE";
 
-  const API_BASE = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/hr/burnout";
+  const API_BASE = API_BASE_URL + "/api/hr/burnout";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

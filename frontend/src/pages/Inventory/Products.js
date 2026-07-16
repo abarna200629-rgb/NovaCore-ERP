@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import axios from "axios";
@@ -73,7 +74,7 @@ function Products() {
   const [poPrice, setPoPrice] = useState("");
   const [poRequester, setPoRequester] = useState("Inventory Manager");
 
-  const API_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/products";
+  const API_URL = API_BASE_URL + "/api/inventory/products";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");
@@ -245,7 +246,7 @@ function Products() {
     }
     try {
       await axios.post(
-        (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/purchases",
+        API_BASE_URL + "/api/inventory/purchases",
         {
           productName: poProdName,
           quantity: parseInt(poQty),
@@ -765,16 +766,16 @@ function Products() {
                   <div className="border rounded p-3 bg-light text-center w-100 mb-4">
                     <div className="small font-semibold text-secondary mb-2">Item 1D Barcode</div>
                     <img 
-                      src={`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/inventory/products/${editProductId}/barcode`} 
+                      src={`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/inventory/products/${editProductId}/barcode`} 
                       alt="Barcode Tag" 
                       className="img-fluid border bg-white p-2 mb-2"
                       style={{ maxHeight: "75px" }}
                     />
                     <div className="d-flex gap-2 justify-content-center">
-                      <button className="btn btn-outline-secondary btn-sm" onClick={() => downloadImage(`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/inventory/products/${editProductId}/barcode`, `${editName}_barcode.png`)}>
+                      <button className="btn btn-outline-secondary btn-sm" onClick={() => downloadImage(`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/inventory/products/${editProductId}/barcode`, `${editName}_barcode.png`)}>
                         Download
                       </button>
-                      <button className="btn btn-outline-secondary btn-sm" onClick={() => handlePrint(`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/inventory/products/${editProductId}/barcode`, editName)}>
+                      <button className="btn btn-outline-secondary btn-sm" onClick={() => handlePrint(`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/inventory/products/${editProductId}/barcode`, editName)}>
                         Print
                       </button>
                     </div>
@@ -784,16 +785,16 @@ function Products() {
                   <div className="border rounded p-3 bg-light text-center w-100">
                     <div className="small font-semibold text-secondary mb-2">Item QR Serialization</div>
                     <img 
-                      src={`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/inventory/products/${editProductId}/qrcode`} 
+                      src={`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/inventory/products/${editProductId}/qrcode`} 
                       alt="QR Tag" 
                       className="img-fluid border bg-white p-2 mb-2"
                       style={{ width: "120px", height: "120px" }}
                     />
                     <div className="d-flex gap-2 justify-content-center">
-                      <button className="btn btn-outline-secondary btn-sm" onClick={() => downloadImage(`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/inventory/products/${editProductId}/qrcode`, `${editName}_qrcode.png`)}>
+                      <button className="btn btn-outline-secondary btn-sm" onClick={() => downloadImage(`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/inventory/products/${editProductId}/qrcode`, `${editName}_qrcode.png`)}>
                         Download
                       </button>
-                      <button className="btn btn-outline-secondary btn-sm" onClick={() => handlePrint(`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/inventory/products/${editProductId}/qrcode`, editName)}>
+                      <button className="btn btn-outline-secondary btn-sm" onClick={() => handlePrint(`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/inventory/products/${editProductId}/qrcode`, editName)}>
                         Print
                       </button>
                     </div>

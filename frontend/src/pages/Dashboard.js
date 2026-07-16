@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
@@ -99,7 +100,7 @@ function Dashboard() {
   const [dbPurchases, setDbPurchases] = useState([]);
   const [dbSuppliers, setDbSuppliers] = useState([]);
 
-  const API_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/dashboard";
+  const API_URL = API_BASE_URL + "/api/dashboard";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");
@@ -110,7 +111,7 @@ function Dashboard() {
 
   const checkBackendHealth = async () => {
     try {
-      await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/health");
+      await axios.get(API_BASE_URL + "/api/health");
       setBackendStatus("connected");
       return true;
     } catch (err) {
@@ -156,11 +157,11 @@ function Dashboard() {
   const loadInventoryDashboardData = async () => {
     if (role !== "ADMIN" && role !== "INVENTORY") return;
     try {
-      const prodRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/products", getConfig());
+      const prodRes = await axios.get(API_BASE_URL + "/api/inventory/products", getConfig());
       setDbProducts(prodRes.data || []);
-      const purRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/purchases", getConfig());
+      const purRes = await axios.get(API_BASE_URL + "/api/inventory/purchases", getConfig());
       setDbPurchases(purRes.data || []);
-      const supRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/suppliers", getConfig());
+      const supRes = await axios.get(API_BASE_URL + "/api/inventory/suppliers", getConfig());
       setDbSuppliers(supRes.data || []);
     } catch (err) {
       console.error("Error loading inventory dashboard details:", err);
@@ -189,11 +190,11 @@ function Dashboard() {
     if (!isEmployee) return;
     
     const results = await Promise.allSettled([
-      axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employee/leaves", getConfig()),
-      axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employee/profile", getConfig()),
-      axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/notifications", getConfig()),
-      axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employee/attendance", getConfig()),
-      axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employee/payslips", getConfig())
+      axios.get(API_BASE_URL + "/api/employee/leaves", getConfig()),
+      axios.get(API_BASE_URL + "/api/employee/profile", getConfig()),
+      axios.get(API_BASE_URL + "/api/notifications", getConfig()),
+      axios.get(API_BASE_URL + "/api/employee/attendance", getConfig()),
+      axios.get(API_BASE_URL + "/api/employee/payslips", getConfig())
     ]);
 
     // 1. Leaves
@@ -283,7 +284,7 @@ function Dashboard() {
     };
 
     try {
-      await axios.post((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employee/leaves", payload, getConfig());
+      await axios.post(API_BASE_URL + "/api/employee/leaves", payload, getConfig());
       alert("Leave Request Submitted successfully! The request status is now PENDING and an email alert has been sent to HR.");
       handleCancelForm();
       loadEmployeeDashboardData();
@@ -312,24 +313,24 @@ function Dashboard() {
   const loadAIData = async () => {
     try {
       if (role === "ADMIN" || role === "FINANCE") {
-        const healthRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/health-score", getConfig());
+        const healthRes = await axios.get(API_BASE_URL + "/api/ai/health-score", getConfig());
         setHealthScores(healthRes.data);
       }
-      const risksRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/risks", getConfig());
+      const risksRes = await axios.get(API_BASE_URL + "/api/ai/risks", getConfig());
       setAiRisks(risksRes.data || []);
 
-      const alertsRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/alerts", getConfig());
+      const alertsRes = await axios.get(API_BASE_URL + "/api/ai/alerts", getConfig());
       setSmartAlerts(alertsRes.data || []);
 
       if (role === "ADMIN" || role === "INVENTORY") {
-        const carbonRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/carbon-footprint", getConfig());
+        const carbonRes = await axios.get(API_BASE_URL + "/api/ai/carbon-footprint", getConfig());
         setCarbon(carbonRes.data);
 
-        const maintRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/predictive-maintenance", getConfig());
+        const maintRes = await axios.get(API_BASE_URL + "/api/ai/predictive-maintenance", getConfig());
         setMaintenance(maintRes.data || []);
       }
 
-      const leaderboardRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/leaderboard", getConfig());
+      const leaderboardRes = await axios.get(API_BASE_URL + "/api/ai/leaderboard", getConfig());
       setLeaderboard(leaderboardRes.data || []);
       setBackendStatus("connected");
     } catch (err) {
@@ -342,7 +343,7 @@ function Dashboard() {
 
   const loadRecentActivities = async () => {
     try {
-      const response = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/audit-logs/recent", getConfig());
+      const response = await axios.get(API_BASE_URL + "/api/audit-logs/recent", getConfig());
       setRecentActivities(response.data || []);
       setActivitiesError("");
       setBackendStatus("connected");
@@ -390,7 +391,7 @@ function Dashboard() {
 
   const handleSimulate = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/ai/simulate?priceChangePct=${simParams.priceChangePct}&expenseChangePct=${simParams.expenseChangePct}&workforceChangePct=${simParams.workforceChangePct}`, getConfig());
+      const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/ai/simulate?priceChangePct=${simParams.priceChangePct}&expenseChangePct=${simParams.expenseChangePct}&workforceChangePct=${simParams.workforceChangePct}`, getConfig());
       setSimulation(response.data);
     } catch (error) {
       console.log("Simulation error:", error);
@@ -399,7 +400,7 @@ function Dashboard() {
 
   const handleTriggerEmergencyPurchases = async () => {
     try {
-      const response = await axios.post((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/emergency-purchase", {}, getConfig());
+      const response = await axios.post(API_BASE_URL + "/api/ai/emergency-purchase", {}, getConfig());
       setEmergencyPurchasesLog(response.data || []);
       loadDashboard();
     } catch (error) {
@@ -432,7 +433,7 @@ function Dashboard() {
       return;
     }
     try {
-      await axios.post((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employee/attendance/checkin", {}, getConfig());
+      await axios.post(API_BASE_URL + "/api/employee/attendance/checkin", {}, getConfig());
       alert("✓ Checked In successfully!");
       loadEmployeeDashboardData();
     } catch (error) {
@@ -442,7 +443,7 @@ function Dashboard() {
 
   const handleCheckOut = async (attendanceId) => {
     try {
-      await axios.put(`${process.env.REACT_APP_API_BASE_URL || (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + ""}/api/employee/attendance/checkout/${attendanceId}`, {}, getConfig());
+      await axios.put(`${process.env.REACT_APP_API_BASE_URL || API_BASE_URL + ""}/api/employee/attendance/checkout/${attendanceId}`, {}, getConfig());
       alert("✓ Checked Out successfully!");
       loadEmployeeDashboardData();
     } catch (error) {

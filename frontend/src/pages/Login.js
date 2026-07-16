@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -47,7 +48,7 @@ const handleRequestResetOtp = async () => {
   }
   setResetError("");
   try {
-    const response = await axios.post((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/auth/forgot-password", { email: resetEmail });
+    const response = await axios.post(API_BASE_URL + "/api/auth/forgot-password", { email: resetEmail });
     if (response.data === "OTP Sent Successfully") {
       alert("Password Reset OTP sent successfully to your email!");
       setResetOtpSent(true);
@@ -66,7 +67,7 @@ const handleResetPassword = async () => {
   }
   setResetError("");
   try {
-    const response = await axios.post((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/auth/reset-password", {
+    const response = await axios.post(API_BASE_URL + "/api/auth/reset-password", {
       email: resetEmail,
       otp: resetOtp,
       newPassword
@@ -96,7 +97,7 @@ const handleResetPassword = async () => {
 const sendOtp = async () => {
   try {
     const response = await axios.post(
-      (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/auth/login",
+      API_BASE_URL + "/api/auth/login",
       {
         username,
         password
@@ -126,7 +127,7 @@ const sendOtp = async () => {
 const verifyOtp = async () => {
   try {
     const response = await axios.post(
-      (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/auth/verify-otp",
+      API_BASE_URL + "/api/auth/verify-otp",
       {
         username,
         otp

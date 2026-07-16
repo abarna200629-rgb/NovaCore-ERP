@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import React, { useState, useEffect } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import axios from "axios";
@@ -24,7 +25,7 @@ function StockOut() {
 
   const loadHistory = async () => {
     try {
-      const response = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory/products", getConfig());
+      const response = await axios.get(API_BASE_URL + "/api/inventory/products", getConfig());
       const mockHistory = (response.data || []).slice(0, 5).map((p, idx) => ({
         id: 2000 + idx,
         date: new Date().toISOString().split("T")[0],

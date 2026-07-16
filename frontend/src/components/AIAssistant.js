@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +21,7 @@ function AIAssistant() {
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
 
-  const API_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/chat";
+  const API_URL = API_BASE_URL + "/api/ai/chat";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");

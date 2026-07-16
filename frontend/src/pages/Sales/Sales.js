@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import axios from "axios";
@@ -25,9 +26,9 @@ function Sales() {
   const [custPhone, setCustPhone] = useState("");
   const [custAddress, setCustAddress] = useState("");
 
-  const BASE_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/sales";
-  const EMP_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/employees";
-  const INV_URL = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/inventory";
+  const BASE_URL = API_BASE_URL + "/api/sales";
+  const EMP_URL = API_BASE_URL + "/api/employees";
+  const INV_URL = API_BASE_URL + "/api/inventory";
 
   const getConfig = () => {
     const token = localStorage.getItem("token");
@@ -82,7 +83,7 @@ function Sales() {
   const fetchCustomerRisk = async (id) => {
     if (!id) return;
     try {
-      const response = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/finance/credit-risk/" + id, getConfig());
+      const response = await axios.get(API_BASE_URL + "/api/finance/credit-risk/" + id, getConfig());
       setSelectedCustomerRisk(response.data);
       setOverrideWarning(false);
     } catch (err) {

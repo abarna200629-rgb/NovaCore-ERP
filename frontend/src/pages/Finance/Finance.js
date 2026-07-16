@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../../layouts/MainLayout";
@@ -24,14 +25,14 @@ function Finance() {
 
   const loadFinanceData = async () => {
     try {
-      const incomeResponse = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/finance/income", getConfig());
-      const expenseResponse = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/finance/expenses", getConfig());
+      const incomeResponse = await axios.get(API_BASE_URL + "/api/finance/income", getConfig());
+      const expenseResponse = await axios.get(API_BASE_URL + "/api/finance/expenses", getConfig());
       
       setIncomeList(incomeResponse.data);
       setExpenseList(expenseResponse.data);
 
       try {
-        const recsRes = await axios.get((process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/ai/recommendations", getConfig());
+        const recsRes = await axios.get(API_BASE_URL + "/api/ai/recommendations", getConfig());
         setRecs(recsRes.data);
       } catch (err) {
         console.log("Error loading AI recommendations:", err);
@@ -51,7 +52,7 @@ function Finance() {
     try {
 
       await axios.post(
-        (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/finance/income",
+        API_BASE_URL + "/api/finance/income",
         {
           incomeSource,
           amount: incomeAmount,
@@ -84,7 +85,7 @@ function Finance() {
     try {
 
       await axios.post(
-        (process.env.REACT_APP_API_BASE_URL || "http://localhost:8080") + "/api/finance/expenses",
+        API_BASE_URL + "/api/finance/expenses",
         {
           expenseName,
           amount: expenseAmount,
