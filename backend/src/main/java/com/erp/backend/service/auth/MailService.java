@@ -61,11 +61,19 @@ public class MailService {
         Properties props = mailSenderImpl.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", mailStartTls.trim());
-        props.put("mail.smtp.ssl.enable", mailSsl.trim());
-        props.put("mail.smtp.connectiontimeout", mailConnectionTimeout.trim());
-        props.put("mail.smtp.timeout", mailConnectionTimeout.trim());
-        props.put("mail.smtp.writetimeout", mailConnectionTimeout.trim());
+        props.put("mail.smtp.starttls.enable", Boolean.valueOf(mailStartTls.trim()));
+        props.put("mail.smtp.ssl.enable", Boolean.valueOf(mailSsl.trim()));
+        
+        try {
+            int timeoutMs = Integer.parseInt(mailConnectionTimeout.trim());
+            props.put("mail.smtp.connectiontimeout", timeoutMs);
+            props.put("mail.smtp.timeout", timeoutMs);
+            props.put("mail.smtp.writetimeout", timeoutMs);
+        } catch (Exception e) {
+            props.put("mail.smtp.connectiontimeout", 5000);
+            props.put("mail.smtp.timeout", 5000);
+            props.put("mail.smtp.writetimeout", 5000);
+        }
 
         if ("true".equalsIgnoreCase(mailSsl.trim())) {
             props.put("mail.smtp.socketFactory.port", mailPort.trim());
