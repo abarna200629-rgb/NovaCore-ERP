@@ -46,6 +46,9 @@ public class MailService {
     @Value("${mail.from:erpmanagement2028@gmail.com}")
     private String mailFrom;
 
+    @Value("${mail.from.name:NovaCore ERP}")
+    private String mailFromName;
+
     // Build mail sender programmatically to ensure properties are loaded
     private JavaMailSender buildJavaMailSender() {
         JavaMailSenderImpl mailSenderImpl = new JavaMailSenderImpl();
@@ -87,7 +90,8 @@ public class MailService {
     // OTP MAIL
     public void sendOtpMail(String toEmail, String otp) {
         System.out.println("OTP generated for recipient: " + toEmail + " is: " + otp);
-        sendEmailAsync(toEmail, "ERP Login OTP", "Your ERP Login OTP is: " + otp + "\n\nValid for 10 minutes.");
+        String htmlContent = "<h2>Your OTP is: " + otp + "</h2><p>Valid for 10 minutes.</p>";
+        sendEmailAsync(toEmail, "NovaCore ERP Login OTP", htmlContent);
     }
 
     // ALERT MAIL
@@ -95,26 +99,64 @@ public class MailService {
         sendEmailAsync(toEmail, subject, text);
     }
 
-    // ASYNC EMAIL HELPER WITH DETAILED LOGGING AND FALLBACK
-    private void sendEmailAsync(String toEmail, String subject, String text) {
+    // ASYNC EMAIL HELPER
+    private void sendEmailAsync(String toEmail, String subject, String content) {
         new Thread(() -> {
-            System.out.println("=== EMAIL TRANSMISSION INITIATED ===");
-            System.out.println("Recipient (To): " + toEmail);
-            System.out.println("Subject: " + subject);
-            System.out.println("Active Mail Provider: " + mailProvider);
-            System.out.println("SMTP Configuration Host: " + mailHost);
-            System.out.println("SMTP Configuration Port: " + mailPort);
-            System.out.println("SMTP Configuration Username: " + mailUsername);
-            System.out.println("SMTP StartTLS Enabled: " + mailStartTls);
-            System.out.println("SMTP SSL Enabled: " + mailSsl);
-            System.out.println("SMTP Connection Timeout: " + mailConnectionTimeout + "ms");
-            System.out.println("Sender Address (From): " + mailFrom);
-            System.out.println("====================================");
+            System.out.println("=== EMAIL DISPATCH INITIATED ===");
+            System.out.println("Mail Provider: " + mailProvider);
+            System.out.println("Recipient: " + toEmail);
+            System.out.println("================================");
 
-            boolean sent = false;
+            if ("BREVO".equalsIgnoreCase(mailProvider)) {
+                try {
+                    System.out.println("Attempting email dispatch via Brevo REST API...");
+                    HttpClient client = HttpClient.newBuilder()
+                            .connectTimeout(Duration.ofSeconds(5))
+                            .build();
 
-            // 1. Attempt SMTP if configured and selected
-            if ("SMTP".equalsIgnoreCase(mailProvider)) {
+                    // Escape double quotes in content
+                    String cleanContent = content.replace("\"", "\\\"");
+
+                    String body = "{"
+                            + "\"sender\":{"
+                            + "\"name\":\"" + mailFromName + "\","
+                            + "\"email\":\"" + mailFrom + "\""
+                            + "},"
+                            + "\"to\":["
+                            + "{"
+                            + "\"email\":\"" + toEmail + "\""
+                            + "}"
+                            + "],"
+                            + "\"subject\":\"" + subject + "\","
+                            + "\"htmlContent\":\"" + cleanContent + "\""
+                            + "}";
+
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
+                            .timeout(Duration.ofSeconds(10))
+                            .header("api-key", brevoApiKey.trim())
+                            .header("Content-Type", "application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString(body))
+                            .build();
+
+                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    
+                    System.out.println("=== BREVO API RESPONSE ===");
+                    System.out.println("Response Code: " + response.statusCode());
+                    System.out.println("Response Body: " + response.body());
+
+                    if (response.statusCode() == 201) {
+                        System.out.println("Delivery Status: SUCCESS (Email accepted by Brevo)");
+                    } else {
+                        System.err.println("Delivery Status: FAILED (HTTP " + response.statusCode() + ")");
+                    }
+                    System.out.println("==========================");
+
+                } catch (Exception e) {
+                    System.err.println("Brevo API delivery encountered a critical exception. Stack Trace:");
+                    e.printStackTrace();
+                }
+            } else if ("SMTP".equalsIgnoreCase(mailProvider)) {
                 try {
                     System.out.println("Attempting email dispatch via SMTP...");
                     JavaMailSender mailSender = buildJavaMailSender();
@@ -122,56 +164,16 @@ public class MailService {
                     message.setFrom(mailFrom);
                     message.setTo(toEmail);
                     message.setSubject(subject);
-                    message.setText(text);
+                    // Standard SMTP text fallback
+                    message.setText(content.replaceAll("<[^>]*>", "")); 
                     mailSender.send(message);
-                    System.out.println("Email sent successfully via SMTP to: " + toEmail);
-                    sent = true;
+                    System.out.println("Delivery Status: SUCCESS (Email sent via SMTP to " + toEmail + ")");
                 } catch (Exception e) {
                     System.err.println("SMTP Mail sending failed to: " + toEmail + ". Complete Error Stack Trace:");
                     e.printStackTrace();
-                    if (brevoApiKey != null && !brevoApiKey.trim().isEmpty()) {
-                        System.out.println("SMTP failed. Initiating automatic fallback to Brevo API...");
-                    } else {
-                        System.err.println("SMTP failed and no fallback BREVO API Key is configured.");
-                    }
                 }
-            }
-
-            // 2. Attempt Brevo if selected OR as automatic fallback
-            if (!sent && ("BREVO".equalsIgnoreCase(mailProvider) || (brevoApiKey != null && !brevoApiKey.trim().isEmpty()))) {
-                try {
-                    System.out.println("Attempting email dispatch via Brevo API...");
-                    HttpClient client = HttpClient.newBuilder()
-                            .connectTimeout(Duration.ofSeconds(5))
-                            .build();
-                    String body = "{"
-                            + "\"sender\":{\"email\":\"" + mailFrom + "\"},"
-                            + "\"to\":[{\"email\":\"" + toEmail + "\"}],"
-                            + "\"subject\":\"" + subject + "\","
-                            + "\"textContent\":\"" + text + "\""
-                            + "}";
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
-                            .timeout(Duration.ofSeconds(10))
-                            .header("api-key", brevoApiKey)
-                            .header("Content-Type", "application/json")
-                            .POST(HttpRequest.BodyPublishers.ofString(body))
-                            .build();
-                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                    if (response.statusCode() >= 200 && response.statusCode() < 300) {
-                        System.out.println("Email sent successfully via Brevo API to: " + toEmail);
-                        sent = true;
-                    } else {
-                        System.err.println("Brevo API responded with error code: " + response.statusCode() + ", body: " + response.body());
-                    }
-                } catch (Exception ex) {
-                    System.err.println("Brevo API sending failed. Error: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
-            }
-
-            if (!sent) {
-                System.err.println("All configured email dispatch channels failed to send message to: " + toEmail);
+            } else {
+                System.err.println("Unsupported mail provider specified: " + mailProvider);
             }
         }).start();
     }
