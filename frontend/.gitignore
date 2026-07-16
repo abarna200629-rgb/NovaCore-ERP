@@ -25,5 +25,6 @@ yarn-error.log*
 # Custom Environment and Maven Target Ignores
 .env
 .env.*
+!.env.example
 *.log
 target/
