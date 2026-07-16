@@ -102,19 +102,32 @@ public class MailService {
     // ASYNC EMAIL HELPER
     private void sendEmailAsync(String toEmail, String subject, String content) {
         new Thread(() -> {
+            String activeProvider = mailProvider;
+            if (System.getenv("RENDER") != null || System.getenv("PORT") != null) {
+                activeProvider = "BREVO";
+            }
+            if (System.getenv("MAIL_PROVIDER") != null && !System.getenv("MAIL_PROVIDER").trim().isEmpty()) {
+                activeProvider = System.getenv("MAIL_PROVIDER").trim();
+            }
+
+            String activeApiKey = (brevoApiKey != null && !brevoApiKey.trim().isEmpty()) ? brevoApiKey : System.getenv("BREVO_API_KEY");
+            if (activeApiKey != null) {
+                activeApiKey = activeApiKey.trim();
+            }
+
             MailLogStore.log("=== EMAIL DISPATCH INITIATED ===");
-            MailLogStore.log("Active Mail Provider: " + mailProvider);
+            MailLogStore.log("Active Mail Provider: " + activeProvider);
             MailLogStore.log("Recipient (To): " + toEmail);
             MailLogStore.log("Sender Address (From): " + mailFrom);
             MailLogStore.log("Sender Name: " + mailFromName);
-            MailLogStore.log("Brevo API Key Exists: " + (brevoApiKey != null && !brevoApiKey.trim().isEmpty()));
-            if (brevoApiKey != null && brevoApiKey.trim().length() > 6) {
-                MailLogStore.log("Brevo API Key Prefix: " + brevoApiKey.trim().substring(0, 6) + "...");
+            MailLogStore.log("Brevo API Key Exists: " + (activeApiKey != null && !activeApiKey.isEmpty()));
+            if (activeApiKey != null && activeApiKey.length() > 6) {
+                MailLogStore.log("Brevo API Key Prefix: " + activeApiKey.substring(0, 6) + "...");
             }
             MailLogStore.log("================================");
 
-            if ("BREVO".equalsIgnoreCase(mailProvider)) {
-                if (brevoApiKey == null || brevoApiKey.trim().isEmpty()) {
+            if ("BREVO".equalsIgnoreCase(activeProvider)) {
+                if (activeApiKey == null || activeApiKey.isEmpty()) {
                     MailLogStore.logErr("WARNING: BREVO configured as provider but BREVO_API_KEY is not set. Skipping transmission.");
                 } else {
                     try {
@@ -145,7 +158,7 @@ public class MailService {
                         HttpRequest request = HttpRequest.newBuilder()
                                 .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
                                 .timeout(Duration.ofSeconds(10))
-                                .header("api-key", brevoApiKey.trim())
+                                .header("api-key", activeApiKey)
                                 .header("Content-Type", "application/json")
                                 .POST(HttpRequest.BodyPublishers.ofString(body))
                                 .build();
@@ -170,7 +183,7 @@ public class MailService {
                         MailLogStore.logErr(sw.toString());
                     }
                 }
-            } else if ("SMTP".equalsIgnoreCase(mailProvider)) {
+            } else if ("SMTP".equalsIgnoreCase(activeProvider)) {
                 if (mailUsername == null || mailUsername.trim().isEmpty() || mailPassword == null || mailPassword.trim().isEmpty()) {
                     MailLogStore.logErr("WARNING: SMTP configured as provider but MAIL_USERNAME or MAIL_PASSWORD is not set. Skipping transmission.");
                 } else {
@@ -192,7 +205,7 @@ public class MailService {
                     }
                 }
             } else {
-                MailLogStore.logErr("Unsupported mail provider specified: " + mailProvider);
+                MailLogStore.logErr("Unsupported mail provider specified: " + activeProvider);
             }
         }).start();
     }
