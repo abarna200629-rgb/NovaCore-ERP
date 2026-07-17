@@ -49,6 +49,34 @@ public class MailService {
     @Value("${mail.from.name:NovaCore ERP}")
     private String mailFromName;
 
+    @jakarta.annotation.PostConstruct
+    public void initDiagnostics() {
+        System.out.println("====================================================");
+        System.out.println("NOVACORE ERP: MAIL SERVICE STARTUP DIAGNOSTICS");
+        System.out.println("====================================================");
+        System.out.println("System.getenv(\"BREVO_API_KEY\") = " + System.getenv("BREVO_API_KEY"));
+        System.out.println("brevoApiKey = " + brevoApiKey);
+        System.out.println("mailProvider = " + mailProvider);
+        System.out.println("mailFrom = " + mailFrom);
+        System.out.println("mailFromName = " + mailFromName);
+        
+        String activeApiKey = (brevoApiKey != null && !brevoApiKey.trim().isEmpty()) ? brevoApiKey : System.getenv("BREVO_API_KEY");
+        if (activeApiKey == null || activeApiKey.trim().isEmpty()) {
+            System.err.println("BREVO_API_KEY is not available in the local environment.");
+        }
+        
+        if (mailFrom != null) {
+            String lowerFrom = mailFrom.toLowerCase().trim();
+            if (lowerFrom.endsWith("@gmail.com") || lowerFrom.endsWith("@yahoo.com") || lowerFrom.endsWith("@outlook.com") || lowerFrom.contains("@hotmail.com")) {
+                System.err.println("WARNING: MAIL_FROM (" + mailFrom + ") uses a public email service. This will result in delivery failures (SPF/DMARC blocks) when sending through Brevo in production. A verified custom domain is highly recommended.");
+                System.out.println("Mail Domain Configuration: Shared Brevo sender or unauthenticated public domain is being used.");
+            } else {
+                System.out.println("Mail Domain Configuration: Custom domain is configured (" + mailFrom.substring(mailFrom.indexOf("@") + 1) + ").");
+            }
+        }
+        System.out.println("====================================================");
+    }
+
     // Build mail sender programmatically to ensure properties are loaded
     private JavaMailSender buildJavaMailSender() {
         JavaMailSenderImpl mailSenderImpl = new JavaMailSenderImpl();
